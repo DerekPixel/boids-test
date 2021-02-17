@@ -177,7 +177,7 @@ class Boid {
       this.divide(steering, total);
       steering = this.setMag(steering, this.maxSpeed);
       this.sub(steering, this.velocity);
-      steering = this.normalizeAndClamp(steering, 0.09);
+      steering = this.normalizeAndClamp(steering, 1);
     }
 
     return steering;
