@@ -21,8 +21,8 @@ class Boid {
     this.anglechecker = true;
     this.maxSpeed = 4;
 
-    this.h = 15;
-    this.w = 10;
+    this.h = 9;
+    this.w = 3;
   }
 
   edges() {
@@ -57,9 +57,9 @@ class Boid {
     ctx.moveTo(this.h, 0);
     ctx.lineTo(-this.h, -this.w);
     ctx.lineTo(-this.h, this.w);
-    
+    ctx.fill();
     ctx.closePath();
-    ctx.stroke();
+    // ctx.stroke();
     ctx.restore();
   }
 
@@ -120,6 +120,17 @@ class Boid {
     return Math.sqrt( a*a + b*b );
   }
 
+  isBehind(other) {
+    var otherAngle = Math.atan2(other.position.y, other.position.x);
+
+    if (otherAngle >= 0.3217 && otherAngle <= 5.9614) {
+      return true;
+    } else {
+      return false;
+    }
+
+  }
+
   align(boids) {
     var perception = 100;
     var steering = {x: 0, y: 0};
@@ -133,7 +144,7 @@ class Boid {
         other.position.y
       );
 
-      if(other !== this && d < perception) {
+      if(other !== this && d < perception && this.isBehind(other)) {
         this.add(steering, other.velocity);
         total++;
       }
@@ -163,7 +174,7 @@ class Boid {
         other.position.y
       );
 
-      if(other !== this && d < perception) {
+      if(other !== this && d < perception && this.isBehind(other)) {
         var diff = this.newSub(this.position, other.position);
 
         this.divide(diff, d*d);
@@ -177,7 +188,7 @@ class Boid {
       this.divide(steering, total);
       steering = this.setMag(steering, this.maxSpeed);
       this.sub(steering, this.velocity);
-      steering = this.normalizeAndClamp(steering, 0.09);
+      steering = this.normalizeAndClamp(steering, 0.1);
     }
 
     return steering;
@@ -197,7 +208,7 @@ class Boid {
         other.position.y
       );
 
-      if(other !== this && d < perception) {
+      if(other !== this && d < perception && this.isBehind(other)) {
         this.add(steering, other.position);
         total++;
       }
@@ -239,7 +250,7 @@ class Boid {
 
 var flock = [];
 
-for(var i = 0; i < 200; i++) {
+for(var i = 0; i < 100; i++) {
   flock.push(new Boid());
 }
 
